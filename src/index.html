@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link href="./output.css" rel="stylesheet">
+    <style>
+        .orange-btn {
+            margin-top: 2.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.5rem;
+            background-color: #ed8936;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .orange-btn:hover {
+            background-color: #dd6b20;
+        }
+
+        .green-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.5rem;
+            background-color: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .green-btn:hover {
+            background-color: #38a169;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="bg-[#1b1b1b] text-zinc-100 w-full min-h-screen">
+        <!-- Timeout Screen -->
+        <div id="timeout-screen"
+            class="hidden w-full h-screen lg:flex flex-col justify-center items-center text-red-600 text-9xl font-bold">
+            😓 Time Out!
+            <button id="retry-btn" class="orange-btn">
+                Try Again 🔁
+            </button>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen"
+            class="w-full h-screen flex flex-col items-center justify-center gap-6 bg-[#1b1b1b] text-white">
+            <h1 class="text-5xl font-bold">Welcome to the Quiz! 🤓</h1>
+            <button id="start-btn" class="green-btn">
+                Start Quiz
+            </button>
+        </div>
+
+        <!-- Main Quiz Screen -->
+        <div id="main-screen" class="hidden w-full flex flex-col items-center gap-y-10 py-10">
+            <h1 class="text-5xl font-bold text-center">What's the output?</h1>
+
+            <div id="question-box" class="w-[75%] h-2/3 flex flex-col items-center gap-6">
+                <pre id="question" class="text-xl font-bold w-[80%] text-left rounded-lg"
+                    style="background-color: #414141; padding: 0 8px 24px 20px;"></pre>
+
+                <div class="w-[70%] flex justify-between items-center">
+                    <p id="question-no">1 / 2</p>
+                    <p id="time">00:01:00</p>
+                </div>
+
+                <ul id="options" class="w-[80%] h-[26rem] flex flex-col justify-between gap-4"></ul>
+            </div>
+
+            <!-- Pagination -->
+            <div id="page" class="w-[50%]">
+                <ul id="pagination" class="w-full flex flex-wrap justify-center gap-3 text-xl cursor-pointer">
+                    <li id="prev-page">👈</li>
+                    <li id="next-page">👉</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden w-full flex flex-col items-center min-h-screen"
+            style="padding-top: 60px;">
+            <h1 class="text-8xl font-bold text-center text-green-500">🎉 Quiz Finished!</h1>
+            <p id="result-score" class="text-3xl mt-6">Your Score: <span class="text-white font-bold"></p>
+            <div id="ans" class="pt-10 w-[80%]"></div>
+        </div>
+    </main>
+    <script src="./main.js"></script>
+</body>
+
+</html>

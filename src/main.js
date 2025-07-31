@@ -1,11 +1,12 @@
 "use strict";
+// quiz.ts
+const SEC_PER_QUESTION = 60;
 async function main() {
     try {
         let noOfQuestions = 10;
         const response = await fetch("http://localhost:8000/quiz");
         const allQuestions = await response.json();
         const data = allQuestions.slice(0, noOfQuestions);
-        console.log("ResData:", data);
         const ques = document.getElementById("question");
         const quesNo = document.getElementById("question-no");
         const timeEl = document.getElementById("time");
@@ -19,10 +20,29 @@ async function main() {
         const startScreen = document.getElementById("start-screen");
         const startBtn = document.getElementById("start-btn");
         const retryBtn = document.getElementById("retry-btn");
+        const continueBtn = document.getElementById("continue-btn");
+        const finalRestart = document.getElementById("finalRestart");
         let currentData = 0;
-        const userAnswers = [];
         const filterAnswers = {};
         let timer;
+        // User Answer Storage
+        const userAnswers = [];
+        let savedAnswer = localStorage.getItem("userAnswers");
+        if (savedAnswer) {
+            const arr = JSON.parse(savedAnswer);
+            arr.forEach((val, i) => userAnswers[i] = val);
+        }
+        //load saved indexx from localStorage on start
+        // debugger;
+        const saved = localStorage.getItem("continueIndex");
+        // debugger;
+        saved !== null ? currentData = JSON.parse(saved) : currentData = 0;
+        // debugger;
+        currentData ? continueBtn.classList.remove("hidden") : continueBtn.classList.add("hidden");
+        // window.addEventListener("load", function() { 
+        //   saved ? continueBtn.classList.remove("hidden") : continueBtn.classList.add("hidden")
+        //   console.log("Page loaded!"); 
+        // });
         function startTimer(durationSec, display) {
             clearInterval(timer);
             let timeLeft = durationSec;
@@ -35,16 +55,19 @@ async function main() {
                 timeLeft--;
                 if (timeLeft < 0) {
                     clearInterval(timer);
-                    timeoutScreen.classList.replace("hidden", "flex");
+                    // timeoutScreen.classList.replace("hidden", "flex");
                     mainScreen.classList.add("hidden");
-                    startScreen.classList.add("hidden");
+                    startScreen.classList.remove("hidden");
+                    continueBtn.classList.remove("hidden");
+                    console.log("Current Index : ", currentData);
+                    localStorage.setItem('continueIndex', JSON.stringify(currentData));
                 }
             }, 1000);
         }
         const initialState = () => {
-            startScreen.classList.remove("hidden");
-            timeoutScreen.classList.replace("flex", "hidden");
-            mainScreen.classList.add("hidden");
+            // startScreen.classList.remove("hidden");
+            // timeoutScreen.classList.replace("flex", "hidden");
+            // mainScreen.classList.add("hidden");
             resultScreen.classList.replace("flex", "hidden");
             currentData = 0;
             userAnswers.length = 0;
@@ -52,8 +75,11 @@ async function main() {
         function resetQuiz() {
             initialState();
             Object.keys(filterAnswers).forEach(k => delete filterAnswers[+k]);
-            optionsUl.innerHTML = "";
+            // optionsUl.innerHTML = "";
             ans.innerHTML = "";
+            //clear resume index
+            localStorage.removeItem('continueIndex');
+            localStorage.removeItem('userAnswers');
         }
         function renderQuestion(index) {
             optionsUl.innerHTML = "";
@@ -73,21 +99,25 @@ async function main() {
                 }
                 optionsUl.appendChild(li);
             });
+            localStorage.setItem('continueIndex', JSON.stringify(currentData));
             addOptionListeners(index);
             // updatePagination();
             createPagination();
-            startTimer(60, timeEl);
+            startTimer(SEC_PER_QUESTION, timeEl);
         }
         function addOptionListeners(index) {
             document.querySelectorAll(".option").forEach(li => {
                 li.onclick = () => {
                     userAnswers[index] = li.id;
+                    localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
                     if (index < data.length - 1) {
                         currentData++;
                         renderQuestion(currentData);
                     }
                     else {
                         showResults();
+                        // for final change
+                        localStorage.setItem('continueIndex', JSON.stringify(0));
                     }
                 };
             });
@@ -174,6 +204,8 @@ async function main() {
             clearInterval(timer);
             resultScreen.classList.replace("hidden", "flex");
             mainScreen.classList.add("hidden");
+            localStorage.setItem('continueIndex', JSON.stringify(0));
+            continueBtn.classList.add("hidden");
             let score = 0;
             data.forEach((q, i) => {
                 if (userAnswers[i] === q.correctAnswer) {
@@ -201,11 +233,22 @@ async function main() {
             });
         }
         startBtn.addEventListener("click", () => {
+            resetQuiz();
             startScreen.classList.add("hidden");
             mainScreen.classList.remove("hidden");
             renderQuestion(currentData);
         });
-        retryBtn.addEventListener("click", resetQuiz);
+        continueBtn.addEventListener("click", () => {
+            startScreen.classList.add("hidden");
+            mainScreen.classList.remove("hidden");
+            renderQuestion(currentData);
+        });
+        finalRestart.addEventListener("click", () => {
+            resetQuiz();
+            startScreen.classList.remove("hidden");
+            mainScreen.classList.add("hidden");
+            resultScreen.classList.add("hidden");
+        });
     }
     catch (error) {
         console.error(error);

@@ -43,21 +43,25 @@
 <body>
     <main class="bg-[#1b1b1b] text-zinc-100 w-full min-h-screen">
         <!-- Timeout Screen -->
-        <div id="timeout-screen"
-            class="hidden w-full h-screen lg:flex flex-col justify-center items-center text-red-600 text-9xl font-bold">
+        <!-- <div id="timeout-screen"
+            class="hidden w-full h-screen flex flex-col justify-center items-center text-red-600 text-9xl font-bold">
             😓 Time Out!
             <button id="retry-btn" class="orange-btn">
                 Try Again 🔁
             </button>
-        </div>
+        </div> -->
 
         <!-- Start Screen -->
         <div id="start-screen"
             class="w-full h-screen flex flex-col items-center justify-center gap-6 bg-[#1b1b1b] text-white">
             <h1 class="text-5xl font-bold">Welcome to the Quiz! 🤓</h1>
-            <button id="start-btn" class="green-btn">
-                Start Quiz
-            </button>
+            <div class="flex gap-4">
+                <button id="start-btn" class="green-btn">
+                    Start Quiz
+                </button>
+                <button id="continue-btn" class="hidden green-btn"
+                    style="background-color: blueviolet;">Continue</button>
+            </div>
         </div>
 
         <!-- Main Quiz Screen -->
@@ -90,7 +94,8 @@
             style="padding-top: 60px;">
             <h1 class="text-8xl font-bold text-center text-green-500">🎉 Quiz Finished!</h1>
             <p id="result-score" class="text-3xl mt-6">Your Score: <span class="text-white font-bold"></p>
-            <div id="ans" class="pt-10 w-[80%]"></div>
+            <button id="finalRestart" class="green-btn mt-6">Restart</button>
+            <div id="ans" class="pt-20 w-[80%]"></div>
         </div>
     </main>
     <script src="./main.js"></script>
